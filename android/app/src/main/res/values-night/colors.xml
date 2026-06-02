@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Variante dark du splash — calée sur darkBackground #101714 du thème app. -->
+    <color name="rihla_splash_background">#101714</color>
+</resources>

@@ -1,0 +1,96 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/.metadata
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/build/
+/android/key.properties
+/android/release/*.jks
+/android/release/*.keystore
+
+# Generated validation screenshots
+/screenshots/
+/test/goldens/failures/
+
+# Local memoire drafts
+/docs/chapitre3-conception*.txt
+/docs/memoire/
+/Mémoire.pdf
+/Présentation PFE.pptx
+/memoire.txt
+/memoire_mu.txt
+/_pages/
+
+# Local Flutter DevTools settings
+devtools_options.yaml
+
+# Python
+.venv/
+venv/
+*.egg-info/
+__pycache__/
+.python-version
+
+# Backup and temporary files
+*.bak
+*.tmp
+*.swp
+*~
+
+# IDE
+.vscode/
+.dart_language_server
+
+# Supabase CLI (npm wrapper installé via package.json gitignored ci-dessous)
+/supabase/.branches/
+/supabase/.temp/
+/supabase/seed.local.sql
+.env
+.env.local
+
+# Secrets / credentials Supabase (jamais committer)
+*.env
+node_modules/
+package.json
+package-lock.json

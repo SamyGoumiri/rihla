@@ -1,0 +1,6 @@
+# Zone d'intake finale : fichiers <slug>_N.<ext> renommés par
+# scripts/collect_site_images.py, en attente d'upload vers le bucket
+# Supabase Storage `sites`. Non versionnés — les images de production
+# vivent dans le bucket Storage (cf. v2.8.0), pas dans le dépôt.
+*
+!.gitignore
