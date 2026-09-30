@@ -10,7 +10,7 @@
 
 ## Contexte
 
-**Projet de fin d'études (PFE) de Licence 3 ISIL** (Ingénierie des Systèmes d'Information et des Logiciels) à l'**ESST** (École Supérieure des Sciences et de la Technologie), réalisé **en binôme** avec Zehani Faten Cherine.
+**Projet de fin d'études (PFE) de Licence 3 ISIL** (Ingénierie des Systèmes d'Information et des Logiciels) à l'**ESST** (École Supérieure des Sciences et de la Technologie), réalisé **en binôme**.
 
 L'objectif : proposer une application mobile qui valorise le patrimoine touristique algérien, utilisable même sans connexion et sans compte.
 
