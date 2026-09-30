@@ -1,121 +1,94 @@
-# Rihla - Application mobile touristique algerienne
+# Rihla
 
-Projet de fin d'etudes (PFE) L3-ISIL, Ecole Superieure des Sciences et
-Technologies (ESST). Rihla est une application Flutter pour explorer,
-commenter et organiser des consultations de sites touristiques en Algerie,
-avec un backend Supabase, une base locale SQLite et un mode invite
-utilisable sans compte.
+> Application mobile pour découvrir, noter et organiser la visite de sites touristiques en Algérie, avec mode hors ligne et mode invité.
 
-## Etat de la stack
+![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?logo=supabase&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Licence](https://img.shields.io/badge/licence-MIT-green)
 
-| Couche | Choix actuel | Role |
+## Contexte
+
+**Projet de fin d'études (PFE) de Licence 3 ISIL** (Ingénierie des Systèmes d'Information et des Logiciels) à l'**ESST** (École Supérieure des Sciences et de la Technologie), réalisé **en binôme**.
+
+Le sujet est fourni dans [`docs/Sujet-PFE-Rihla.pdf`](docs/Sujet-PFE-Rihla.pdf). L'objectif : proposer une application mobile qui valorise le patrimoine touristique algérien, utilisable même sans connexion et sans compte.
+
+## Fonctionnalités
+
+- **Catalogue de 48 sites touristiques** répartis en 4 catégories principales et couvrant les grandes régions d'Algérie.
+- **Recherche et recommandations** : recherche textuelle, filtres par catégorie, et recommandations avec repli sur les sites les mieux notés quand l'utilisateur n'a pas encore d'historique.
+- **Fiches détaillées** : photos, adresse, favoris, avis publics (j'aime / je n'aime pas) et ajout à l'itinéraire.
+- **Carte interactive** (OpenStreetMap) avec géolocalisation, filtres et marqueurs, itinéraires et trajets multi-étapes via OSRM.
+- **Mode invité** : exploration du catalogue sans créer de compte.
+- **Authentification** par email et mot de passe : confirmation d'inscription par lien, réinitialisation par lien profond `rihla://auth-callback`, modification de l'email, du mot de passe et du pseudo, suppression de compte.
+- **Profil** : avatar, préférences de thème, historique, avis publiés, numéros utiles.
+- **Mode hors ligne** : le dernier catalogue chargé reste consultable, et les changements de l'utilisateur sont synchronisés au retour du réseau.
+
+## Stack technique
+
+| Couche | Technologies | Rôle |
 |---|---|---|
-| Mobile | Flutter / Dart | Android, iOS |
-| Backend cloud | Supabase Auth + Postgres + Storage | Authentification, catalogue, profils, favoris, historique, avis, avatars |
-| Base locale | SQLite via `sqflite` | Cache offline du catalogue et file de synchronisation locale |
-| Carte / routing | OpenStreetMap + OSRM | Tuiles, itineraire, trip multi-etapes |
-
-## Fonctionnalites
-
-- Catalogue de 48 sites touristiques et 4 categories principales servis par
-  Supabase, couvrant les grandes regions d'Algerie.
-- Recherche texte, filtres par categorie et recommandations avec repli vers
-  les sites les mieux notes quand l'utilisateur n'a pas encore d'historique.
-- Fiches detail avec photos, adresse, favoris, avis publics (likes/dislikes)
-  et ajout a l'itineraire.
-- Carte interactive Flutter Map avec geolocalisation, filtres, marqueurs et
-  attribution OpenStreetMap.
-- Mode invite local pour explorer le catalogue sans creer de compte.
-- Authentification email/mot de passe Supabase, confirmation d'inscription
-  par lien email, reset password par deep link `rihla://auth-callback`,
-  modification email/mot de passe/pseudo.
-- Profil, preferences de theme, avatar Supabase Storage.
-- Offline SQL : les derniers sites/categories charges restent consultables via
-  SQLite ; les changements utilisateur sont marques `dirty` puis pousses vers
-  Supabase au retour reseau.
-- Avis publics lisibles par tous, ecriture reservee au proprietaire.
-
-## Demarrage rapide
-
-```bash
-flutter pub get
-flutter analyze
-flutter run \
-  --dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJhbGciOi...
-```
-
-Sans `SUPABASE_URL` et `SUPABASE_ANON_KEY`, l'app peut demarrer pour du
-developpement UI local, mais les fonctions cloud sont indisponibles :
-authentification, catalogue distant, sync, avis publics et avatars.
-
-## Builds Android
-
-```bash
-flutter build apk --release \
-  --dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJhbGciOi...
-
-flutter build appbundle --release \
-  --dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
-  --dart-define=SUPABASE_ANON_KEY=eyJhbGciOi...
-```
-
-Sans `SUPABASE_URL` et `SUPABASE_ANON_KEY`, le build se lance mais l'APK est
-deconnecte du backend : authentification, catalogue distant, sync, avis publics
-et avatars sont alors indisponibles.
+| Mobile | Flutter, Dart | Application Android et iOS |
+| Backend cloud | Supabase (Auth, Postgres, Storage, Edge Functions) | Authentification, catalogue, profils, favoris, historique, avis, avatars |
+| Base locale | SQLite (`sqflite`) | Cache hors ligne et file de synchronisation |
+| Cartographie | `flutter_map`, OpenStreetMap, OSRM, `geolocator` | Carte, localisation, itinéraires |
 
 ## Architecture
 
-```text
+```
 lib/
-  main.dart                         # init Supabase conditionnelle + SQLite
-  app/                              # MaterialApp, theme
+  main.dart                   Initialisation conditionnelle de Supabase et de SQLite
+  app/                        MaterialApp et thème
   core/
-    config/supabase_config.dart     # dart-define runtime
-    database/local_database.dart    # schema SQLite local
-    database/remote_database.dart   # abstraction Supabase/PostgREST
-    services/                       # auth, sync, profil, photo, routing
+    config/                   Configuration Supabase (dart-define)
+    database/                 Schéma SQLite local et accès distant Supabase
+    services/                 Auth, synchronisation, profil, favoris, avis, routage
+    theme/ utils/ widgets/
   data/
-    models/                         # TouristSite, SiteCategory, SiteReview
-    repositories/                   # SiteRepository, CategoryRepository
+    models/                   Modèles : site, catégorie, avis
+    repositories/             Accès aux données
   features/
-    auth/                           # welcome, login, signup, email_sent, account_confirmed, reset_password
-    discover/                       # page Explorer
-    sites/                          # fiche detail
-    map/                            # carte
-    settings/                       # profil et reglages (apparence, compte, confidentialite)
-    favorites/                      # liste favoris ouverte depuis le profil
-    navigation/                     # AppShell + AppRouter + navigation temps reel
+    auth/                     Accueil, connexion, inscription, confirmation, mot de passe oublié
+    discover/                 Exploration du catalogue
+    sites/                    Fiche détaillée d'un site
+    map/                      Carte interactive
+    favorites/                Favoris
+    navigation/               Coque de l'application, routeur, navigation en temps réel
+    settings/                 Profil et réglages
 
 supabase/
-  config.toml                       # configuration projet Supabase
-  functions/delete_account/         # Edge Function : suppression de compte
+  config.toml                 Configuration du projet Supabase
+  functions/delete_account/   Edge Function de suppression de compte
+docs/                         Sujet du PFE
 ```
 
-Le backend cloud (schema Postgres, RLS, buckets Storage `sites` et `avatars`)
-est heberge sur Supabase. La suppression de compte passe par l'Edge Function
-`delete_account`, qui s'appuie sur la `service_role` pour effacer l'utilisateur
-et ses donnees en cascade.
+**Synchronisation hors ligne.** Les modifications locales sont marquées `dirty`. Le service `UserDataSyncService` envoie les changements locaux avant toute récupération distante, et annule la récupération si l'envoi échoue, pour ne pas écraser des données non synchronisées. La suppression de compte passe par l'Edge Function `delete_account`, qui utilise la clé `service_role` côté serveur uniquement.
 
-## Synchronisation offline
+## Installation
 
-SQLite stocke localement :
+**Prérequis** : [Flutter](https://docs.flutter.dev/get-started/install) (SDK Dart ≥ 3.11) et un projet [Supabase](https://supabase.com) avec le schéma attendu par l'application.
 
-- catalogue : `sites`, `categories`, `site_categories`;
-- donnees utilisateur : `profiles`, `favorites`, `view_history`, `ratings`,
-  `reviews`;
-- etat : `sync_state`.
+1. Récupérer les dépendances :
+   ```bash
+   git clone https://github.com/SamyGoumiri/rihla.git
+   cd rihla
+   flutter pub get
+   ```
+2. Lancer l'application en fournissant les paramètres Supabase :
+   ```bash
+   flutter run \
+     --dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
+     --dart-define=SUPABASE_ANON_KEY=votre_cle_anon
+   ```
+3. Construire un APK de production :
+   ```bash
+   flutter build apk --release \
+     --dart-define=SUPABASE_URL=https://xxxxx.supabase.co \
+     --dart-define=SUPABASE_ANON_KEY=votre_cle_anon
+   ```
 
-Les mutations locales passent `dirty = 1`. `UserDataSyncService` pousse les
-changements locaux avant tout pull distant. Si le push echoue, le pull est
-annule pour eviter d'ecraser des donnees offline non synchronisees par une
-ancienne version cloud.
-
-Limite connue : sur une installation neuve totalement hors ligne, le catalogue
-et les categories restent vides tant qu'un premier pull Supabase n'a pas hydrate
-SQLite. L'application affiche alors un etat vide ou indisponible explicite,
-plutot qu'un catalogue fictif embarque.
+Sans `SUPABASE_URL` ni `SUPABASE_ANON_KEY`, l'application démarre pour le développement de l'interface, mais les fonctions cloud (authentification, catalogue distant, synchronisation, avis, avatars) sont indisponibles. Seule la clé publique `anon` doit être embarquée dans l'application ; ne jamais y mettre la clé `service_role`.
 
 ## Validation
 
@@ -124,7 +97,12 @@ dart format --output=none --set-exit-if-changed lib
 flutter analyze
 ```
 
+## Limites connues
+
+- Le schéma Postgres et les politiques RLS sont hébergés sur Supabase et ne sont que partiellement versionnés dans `supabase/migrations/`. Un nouveau projet Supabase demande donc de recréer le schéma manuellement.
+- Sur une installation neuve totalement hors ligne, le catalogue reste vide tant qu'une première synchronisation n'a pas eu lieu : l'application affiche alors un état vide explicite plutôt qu'un faux catalogue.
+- Pas de suite de tests automatisés ni d'intégration continue dans ce dépôt.
+
 ## Licence
 
-Projet academique PFE - L3-ISIL, Ecole Superieure des Sciences et
-Technologies (ESST).
+Distribué sous licence [MIT](LICENSE).
