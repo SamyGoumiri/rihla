@@ -10,9 +10,9 @@
 
 ## Contexte
 
-**Projet de fin d'études (PFE) de Licence 3 ISIL** (Ingénierie des Systèmes d'Information et des Logiciels) à l'**ESST** (École Supérieure des Sciences et de la Technologie), réalisé **en binôme**.
+**Projet de fin d'études (PFE) de Licence 3 ISIL** (Ingénierie des Systèmes d'Information et des Logiciels) à l'**ESST** (École Supérieure des Sciences et de la Technologie), réalisé **en binôme** avec Zehani Faten Cherine.
 
-Le sujet est fourni dans [`docs/Sujet-PFE-Rihla.pdf`](docs/Sujet-PFE-Rihla.pdf). L'objectif : proposer une application mobile qui valorise le patrimoine touristique algérien, utilisable même sans connexion et sans compte.
+L'objectif : proposer une application mobile qui valorise le patrimoine touristique algérien, utilisable même sans connexion et sans compte.
 
 ## Fonctionnalités
 
@@ -60,7 +60,6 @@ lib/
 supabase/
   config.toml                 Configuration du projet Supabase
   functions/delete_account/   Edge Function de suppression de compte
-docs/                         Sujet du PFE
 ```
 
 **Synchronisation hors ligne.** Les modifications locales sont marquées `dirty`. Le service `UserDataSyncService` envoie les changements locaux avant toute récupération distante, et annule la récupération si l'envoi échoue, pour ne pas écraser des données non synchronisées. La suppression de compte passe par l'Edge Function `delete_account`, qui utilise la clé `service_role` côté serveur uniquement.
